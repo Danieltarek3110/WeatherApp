@@ -1,57 +1,24 @@
-//Importing packages
-const request = require('postman-request');
+// Importing packages
 const chalk = require('chalk');
-const express = require('express');
 
-//Fetching weather data
-const url = 'http://api.weatherapi.com/v1/current.json?key=83ea0460bee84aae82c224123240602&q=Cairo';
-request({url: url} , (error , response)=>{
-    const data = JSON.parse(response.body);
-    if(data.error){
-        console.log('ERROR: ' + data.error.message);
-    }else{
-        
-        const current = data.current;
-        const temp_in_celcius = current.feelslike_c;
-        const humidity = current.humidity;
-    
-        console.log("The wheather is " + temp_in_celcius + "*C" );
-        console.log("The humidity is " + humidity + "%");
+const geocode = require('./utils/geocode');
+const weather = require('./utils/weather');
 
-    }
-
-
-});
-
-
-//Geocoding
-const GeoUrl = 'https://geocode.maps.co/search?q=heliopolis&api_key=65c62d1724aef268305324dqi868a64';
-request({ url: GeoUrl , rejectUnauthorized: false }, (error, response) => {
+// Use geocode with a callback
+geocode('Cairo', (error, geoData) => {
     if (error) {
-        console.error('Error making the request:', error);
-        return;
-    }
-    else if(response.body){
-
-        const data = JSON.parse(response.body);
-
-        if(data.length == 0){
-            console.log('Error: Data empty due to invalid location')
-        }else{
-
-            const displayname = data[0].display_name;
-            const lat = data[0].lat;
-            const lon = data[0].lon;
-    
-            console.log("Name: " + displayname);
-            console.log("Latitude: " + lat);
-            console.log("Longitude: " + lon);
-
-        }
-
-
+        console.log(error);
+    } else {
         
+        // Call weather with the obtained information from geocode
+        weather(geoData, (error, weatherData) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(chalk.bold.blue('Name:', geoData.Name));
+                console.log(chalk.bold.blue('Temperature:', weatherData.temp, '°C'));
+                console.log(chalk.bold.blue('Humidity:', weatherData.humidity));
+            }
+        });
     }
-
-
-} );
+});
