@@ -1,10 +1,11 @@
 const request = require('postman-request');
-
+const dotenv = require('dotenv');
+dotenv.config();
 
 const weather = (info, callback)=>{
     const lat = encodeURIComponent(info.lat);
     const lon = encodeURIComponent(info.lon);
-    const url = 'http://api.weatherapi.com/v1/current.json?key=83ea0460bee84aae82c224123240602&q='+ lat + ',' + lon ;
+    const url = `http://api.weatherapi.com/v1/current.json?key=${process.env.key}&q=`+ lat + ',' + lon ;
     request({url: url } , (error , response)=>{
         const data = JSON.parse(response.body);
         if(error){
