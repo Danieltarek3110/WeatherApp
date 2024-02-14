@@ -4,8 +4,8 @@ const express = require('express');
 const chalk = require('chalk');
 const hbs  = require('hbs');
 
-const weather = require('../../utils/weather');
-const geocode = require('../../utils/geocode');
+const weather = require('../utils/weather');
+const geocode = require('../utils/geocode');
 
 /* __________________________________________________________________________________________________________________ */
 const app = express();
@@ -23,6 +23,8 @@ hbs.registerPartials(partialsPath);
 
 //Setup static directory to serve
 app.use(express.static(PublicDirPath));
+
+
 
 
 app.get('' , (req , res)=>{
@@ -55,12 +57,14 @@ app.get('/help' , (req , res)=>{
     res.send('HELP PAGE');
 });
 
-app.get('/about' , (req , res)=>{
-    res.send('<h1>This is the about page</h1>');
-});
-
 app.get('/weather' , (req , res)=>{
-    geocode('Cairo', (error, {Name , lat , lon}={}) => {
+
+    if(!req.query.search){
+        return res.send({
+            error: 'Please enter an address to search for'
+        });
+    }
+    geocode( req.query.search , (error, {Name , lat , lon}={}) => {
         if (error) {
             console.log(error);
         } else {
@@ -78,6 +82,8 @@ app.get('/weather' , (req , res)=>{
             });
         }
     });
+
+    
 });
 
 app.get('/help/*' , (req , res) => {
@@ -91,3 +97,7 @@ app.get('*' , (req, res)=>{
 app.listen(3000 , ()=>{
     console.log('Server is up on port 3000');
 });
+
+
+
+
