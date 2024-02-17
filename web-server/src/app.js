@@ -4,7 +4,7 @@ const express = require('express');
 const chalk = require('chalk');
 const hbs  = require('hbs');
 
-const weather = require('../utils/weather');
+const Myweather = require('../utils/weather');
 const geocode = require('../utils/geocode');
 
 /* __________________________________________________________________________________________________________________ */
@@ -51,11 +51,61 @@ app.get('/contact' , (req , res)=>{
 
 });
 
+app.get('/weather', async (req, res) => {
+    try {
+        const { lat, lon } = req.query;
 
+        // Use your weather module to fetch data
+        const weatherData = await Myweather.weather({ lat, lon });
+        console.log(weatherData);
+
+        // Send the weather data as JSON to the client
+        res.json(weatherData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/searchweather', async (req, res) => {
+    try {
+        const  location  = req.query;
+
+        // Use your weather module to fetch data based on the location
+        const weatherData = await Myweather.weatherbylocation( location );
+        console.log(weatherData);
+        
+        // Send the weather data as JSON to the client
+        res.json(weatherData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
     
 app.get('/help' , (req , res)=>{
     res.send('HELP PAGE');
 });
+
+
+
+app.get('/help/*' , (req , res) => {
+    res.send('Help article not found');
+})
+
+app.get('*' , (req, res)=>{
+        res.render('404');
+})
+
+app.listen(3000 , ()=>{
+    console.log('Server is up on port 3000');
+});
+
+
+
+
+/*
+
 
 app.get('/weather' , (req , res)=>{
 
@@ -86,18 +136,5 @@ app.get('/weather' , (req , res)=>{
     
 });
 
-app.get('/help/*' , (req , res) => {
-    res.send('Help article not found');
-})
 
-app.get('*' , (req, res)=>{
-        res.render('404');
-})
-
-app.listen(3000 , ()=>{
-    console.log('Server is up on port 3000');
-});
-
-
-
-
+*/
