@@ -259,15 +259,12 @@
 
           async function getWeatherData(lat, lon) {
             try {
-                //const response = await fetch(`/weather?lat=${lat}&lon=${lon}`);
 				const response = await fetch(`/weather?lat=20.5&lon=6.2`);
 				
                 const data = await response.json();
 
                 document.getElementById("location").innerText = `${data.location}`;
                 document.getElementById("temperature").innerText = `${data.temp}°C`;
-                //document.getElementById("humidity").innerText = `${data.humidity}`;
-				//document.getElementById("windspeed").innerText = `${data.windSpeed}`;
 				document.getElementById("windspeed").innerHTML=`<img src="images/icon-wind.png" alt="">${data.windSpeed}km/h`;
 
 
@@ -288,16 +285,31 @@
             const response = await fetch(`/searchweather?location=${encodeURIComponent(location)}`);
             const weatherData = await response.json();
 
-            // Handle the weather data as needed (e.g., update the UI)
-			document.getElementById("location").innerText = `${weatherData.location}`;
-            document.getElementById("temperature").innerText = `${weatherData.temp}°C`;
-			document.getElementById("windspeed").innerHTML=`<img src="images/icon-wind.png" alt="">${weatherData.windSpeed}km/h`;
-            document.getElementById("winddirection").innerHTML = `<img src="images/icon-compass.png"  alt="">${weatherData.windDirection}`;
+			console.log(weatherData);
 
+			if(weatherData.error){
+
+				// Handle the weather data as needed (e.g., update the UI)
+				document.getElementById("location").innerText = `Invalid Location`;
+				document.getElementById("temperature").innerText = `Invalid Location`;
+				document.getElementById("windspeed").innerHTML=`<img src="images/icon-wind.png" alt="">${weatherData.windSpeed}km/h`;
+				document.getElementById("winddirection").innerHTML = `<img src="images/icon-compass.png"  alt="">${weatherData.windDirection}`;
+			
+			}else{
+				// Handle the weather data as needed (e.g., update the UI)
+				document.getElementById("location").innerText = `${weatherData.location}`;
+				document.getElementById("temperature").innerText = `${weatherData.temp}°C`;
+				document.getElementById("windspeed").innerHTML=`<img src="images/icon-wind.png" alt="">${weatherData.windSpeed}km/h`;
+				document.getElementById("winddirection").innerHTML = `<img src="images/icon-compass.png"  alt="">${weatherData.windDirection}`;
+			}
+
+            
         }
 
 
         </script>
+
+		<script src="js/UserLocation.js"></script>
 		
 		<script src="js/jquery-1.11.1.min.js"></script>
 		<script src="js/plugins.js"></script>

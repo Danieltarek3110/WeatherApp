@@ -57,10 +57,10 @@ app.get('/weather', async (req, res) => {
 
         // Use your weather module to fetch data
         const weatherData = await Myweather.weather({ lat, lon });
-        console.log(weatherData);
 
         // Send the weather data as JSON to the client
         res.json(weatherData);
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -71,11 +71,21 @@ app.get('/searchweather', async (req, res) => {
     try {
         const  location  = req.query;
 
-        // Use your weather module to fetch data based on the location
+        // Use weather to fetch data based on the location
         const weatherData = await Myweather.weatherbylocation( location );
-        console.log(weatherData);
         
         // Send the weather data as JSON to the client
+        res.json(weatherData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/weatherbyuserlocation', async (req, res) => {
+    try {
+        const userslocation = await Myweather.getUserLocation();
+        const weatherData = await Myweather.weather(userslocation);
         res.json(weatherData);
     } catch (error) {
         console.error(error);

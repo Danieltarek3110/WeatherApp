@@ -43,32 +43,39 @@ const weatherbylocation = (location) => {
                 reject('Error');
             } else {
                 const data = JSON.parse(response.body);
-                console.log(data);
-                const location = data.location;
-                const country = location.country;
-                const current = data.current;
-                const temp_in_celcius = current.feelslike_c;
-                const humidity = current.humidity;
-                const windspeed = current.wind_kph;
-                const windDirection = current.wind_dir;
+                if(data.error){
+                    reject('Invalid Location')
 
-                const returned_data = {
-                    location: country,
-                    temp: temp_in_celcius,
-                    humidity: humidity,
-                    windSpeed: windspeed,
-                    windDirection: windDirection
-                };
+                }else{
+                    const location = data.location;
+                    const country = location.country;
+                    const current = data.current;
+                    const temp_in_celcius = current.feelslike_c;
+                    const humidity = current.humidity;
+                    const windspeed = current.wind_kph;
+                    const windDirection = current.wind_dir;
+    
+                    const returned_data = {
+                        location: country,
+                        temp: temp_in_celcius,
+                        humidity: humidity,
+                        windSpeed: windspeed,
+                        windDirection: windDirection
+                    };
+    
+                    resolve(returned_data);
 
-                resolve(returned_data);
+                }
+
             }
         });
     });
 };
 
+
 module.exports = {
     weather,
-    weatherbylocation
+    weatherbylocation,
 }
 
 
